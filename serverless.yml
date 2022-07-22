@@ -1,0 +1,21 @@
+service: ddb-transactions
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  tableName: ${self:custom.stage}-${self:service}
+
+provider:
+  name: aws
+  runtime: nodejs16.x
+  stage: dev
+  deploymentBucket:
+    name: com.reference-architecture.deploys
+    serverSideEncryption: AES256
+  
+# NOTE - I do not recommend managing DynamoDB inside the project that will use it.
+#   In brief, a restore will wreck your references. For more information, contact me.
+resources:
+  - ${file(infrastructure/dynamodb.yml)}
+
+plugins:
+  - serverless-deployment-bucket
