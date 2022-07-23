@@ -1,4 +1,7 @@
 // From https://aws.amazon.com/blogs/database/simulating-amazon-dynamodb-unique-constraints-using-transactions
+/**
+ * Constraints: id, userName, and email must be unique per user
+ */
 
 import Logger from '@dazn/lambda-powertools-logger';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
@@ -28,11 +31,18 @@ export const saveUser = async (user: User): Promise<void> => {
     Put: {
       Item: user,
       TableName: TABLE_NAME,
-      // ConditionExpression: 'attribute_not_exists(id)',
+      ConditionExpression: 'attribute_not_exists(id)',
+    },
+  };
+  const putUserName = {
+    Put: {
+      Item: { id: user.userName },
+      TableName: TABLE_NAME,
+      ConditionExpression: 'attribute_not_exists(id)',
     },
   };
   const input: TransactWriteCommandInput = {
-    TransactItems: [putUser],
+    TransactItems: [putUser, putUserName],
   };
   try {
     await documentClient.send(new TransactWriteCommand(input));
