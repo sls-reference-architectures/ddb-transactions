@@ -1,8 +1,20 @@
-import { saveUser } from '../src/uniqueConstraints';
-import { createRandomUser } from './testHelpers';
+import retry from 'async-retry';
+
+import { saveUser, User } from '../src/uniqueConstraints';
+import { createRandomUser, TestHelpers } from './testHelpers';
 
 describe('When saving user', () => {
-  it('should succeed (baseline)', async () => {
+  let testHelpers: TestHelpers;
+
+  beforeAll(() => {
+    testHelpers = new TestHelpers();
+  });
+
+  afterAll(async () => {
+    // teardown?
+  });
+
+  it.skip('should succeed (baseline)', async () => {
     // ARRANGE
     const user = createRandomUser();
 
@@ -11,5 +23,22 @@ describe('When saving user', () => {
 
     // ASSERT
     await expect(saveUserAction()).resolves.not.toThrow();
+  });
+
+  it.skip('should save record in the database', async () => {
+    // ARRANGE
+    const user = createRandomUser();
+
+    // ACT
+    await saveUser(user);
+
+    // ASSERT
+    await retry(
+      async () => {
+        const userInDb = (await testHelpers.getUser(user.id)) as User;
+        expect(userInDb.email).toEqual(user.email);
+      },
+      { retries: 3 },
+    );
   });
 });
