@@ -52,3 +52,33 @@ export const saveUser = async (user: User): Promise<void> => {
     throw err;
   }
 };
+
+export const deleteUser = async (input: {
+  id: string;
+  userName: string;
+  email: string;
+}): Promise<void> => {
+  const { id, email, userName } = input;
+  const deleteUserEntity = {
+    Delete: {
+      TableName: TABLE_NAME,
+      Key: { id },
+    },
+  };
+  const deleteUserName = {
+    Delete: {
+      TableName: TABLE_NAME,
+      Key: { id: userName },
+    },
+  };
+  const deleteEmail = {
+    Delete: {
+      TableName: TABLE_NAME,
+      Key: { id: email },
+    },
+  };
+  const txInput: TransactWriteCommandInput = {
+    TransactItems: [deleteUserEntity, deleteEmail, deleteUserName],
+  };
+  await documentClient.send(new TransactWriteCommand(txInput));
+};

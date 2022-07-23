@@ -1,8 +1,6 @@
 import { ulid } from 'ulid';
 import faker from 'faker';
 import {
-  DeleteCommand,
-  DeleteCommandInput,
   DynamoDBDocumentClient,
   GetCommand,
   GetCommandInput,
@@ -11,7 +9,7 @@ import {
 } from '@aws-sdk/lib-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 
-import { User } from '../src/uniqueConstraints';
+import { deleteUser, User } from '../src/uniqueConstraints';
 
 export const createRandomUser = (overrideWith?: Partial<User>): User => {
   const firstName = faker.name.firstName();
@@ -55,16 +53,7 @@ export class TestHelpers {
     if (!user) {
       return;
     }
-    const deleteUserInput: DeleteCommandInput = {
-      TableName: process.env.TABLE_NAME,
-      Key: { id },
-    };
-    await this.documentClient.send(new DeleteCommand(deleteUserInput));
-    const deleteUserNameInput: DeleteCommandInput = {
-      TableName: process.env.TABLE_NAME,
-      Key: { id: user.userName },
-    };
-    await this.documentClient.send(new DeleteCommand(deleteUserNameInput));
+    await deleteUser(user);
   }
 
   async getUser(id: string) {
