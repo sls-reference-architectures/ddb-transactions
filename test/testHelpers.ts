@@ -29,7 +29,7 @@ export class TestHelpers {
   async getUser(id: string) {
     const getInput: GetCommandInput = {
       TableName: process.env.TABLE_NAME,
-      Key: { pk: id },
+      Key: { id },
     };
     const { Item: user } = await this.documentClient.send(new GetCommand(getInput));
 

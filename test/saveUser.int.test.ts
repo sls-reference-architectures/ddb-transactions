@@ -14,7 +14,7 @@ describe('When saving user', () => {
     // teardown?
   });
 
-  it.skip('should succeed (baseline)', async () => {
+  it('should succeed (baseline)', async () => {
     // ARRANGE
     const user = createRandomUser();
 
@@ -25,7 +25,7 @@ describe('When saving user', () => {
     await expect(saveUserAction()).resolves.not.toThrow();
   });
 
-  it.skip('should save record in the database', async () => {
+  it('should save record in the database', async () => {
     // ARRANGE
     const user = createRandomUser();
 

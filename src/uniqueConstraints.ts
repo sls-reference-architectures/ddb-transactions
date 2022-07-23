@@ -7,7 +7,6 @@ import {
   TransactWriteCommand,
   TransactWriteCommandInput,
 } from '@aws-sdk/lib-dynamodb';
-import { marshall } from '@aws-sdk/util-dynamodb';
 
 const {
   env: { AWS_REGION, TABLE_NAME },
@@ -25,12 +24,11 @@ export interface User {
 
 export const saveUser = async (user: User): Promise<void> => {
   Logger.debug('In saveUser()', { user, TABLE_NAME });
-  const marshalledUser = marshall(user);
   const putUser = {
     Put: {
-      Item: marshalledUser,
+      Item: user,
       TableName: TABLE_NAME,
-      // ConditionExpression: 'attribute_not_exists(pk)',
+      // ConditionExpression: 'attribute_not_exists(id)',
     },
   };
   const input: TransactWriteCommandInput = {
@@ -41,7 +39,6 @@ export const saveUser = async (user: User): Promise<void> => {
   } catch (err) {
     const error = err as Error;
     Logger.warn('Transaction failed', error);
-    // console.log(JSON.stringify(error, null, 2));
     throw err;
   }
 };
