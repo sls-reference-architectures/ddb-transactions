@@ -36,13 +36,13 @@ export default class UserRepository {
     const deleteUserName = {
       Delete: {
         TableName: TABLE_NAME,
-        Key: { pk: user.userName },
+        Key: { pk: `userName#${user.userName}` },
       },
     };
     const deleteEmail = {
       Delete: {
         TableName: TABLE_NAME,
-        Key: { pk: user.email },
+        Key: { pk: `email#${user.email}` },
       },
     };
     const txInput: TransactWriteCommandInput = {
@@ -62,7 +62,7 @@ export default class UserRepository {
   }
 
   async saveUser(user: User): Promise<void> {
-    Logger.debug('In saveUser()', { user, TABLE_NAME });
+    Logger.debug('In saveUser()', { user });
     const putUser = {
       Put: {
         Item: UserRepository.transformToDbSchema(user),
@@ -72,14 +72,14 @@ export default class UserRepository {
     };
     const putUserName = {
       Put: {
-        Item: { pk: user.userName },
+        Item: { pk: `userName#${user.userName}` },
         TableName: TABLE_NAME,
         ConditionExpression: 'attribute_not_exists(pk)',
       },
     };
     const putEmail = {
       Put: {
-        Item: { pk: user.email },
+        Item: { pk: `email#${user.email}` },
         TableName: TABLE_NAME,
         ConditionExpression: 'attribute_not_exists(pk)',
       },
@@ -110,5 +110,43 @@ export default class UserRepository {
     delete domainModel.pk;
 
     return domainModel;
+  }
+
+  async updateEmail(input: { id: string; newEmail: string; oldEmail: string }): Promise<void> {
+    Logger.debug('In updateEmail()', { input });
+    const { id, oldEmail, newEmail } = input;
+    const updateUser = {
+      Update: {
+        TableName: TABLE_NAME,
+        Key: { pk: id },
+        UpdateExpression: 'SET email = :email',
+        ExpressionAttributeValues: {
+          ':email': newEmail,
+        },
+      },
+    };
+    const deleteOldEmailConstraint = {
+      Delete: {
+        TableName: TABLE_NAME,
+        Key: { pk: `email#${oldEmail}` },
+      },
+    };
+    const addNewEmailConstraint = {
+      Put: {
+        TableName: TABLE_NAME,
+        Item: { pk: `email#${newEmail}` },
+        ConditionExpression: 'attribute_not_exists(pk)',
+      },
+    };
+    const txInput: TransactWriteCommandInput = {
+      TransactItems: [updateUser, deleteOldEmailConstraint, addNewEmailConstraint],
+    };
+    try {
+      await this.documentClient.send(new TransactWriteCommand(txInput));
+    } catch (err) {
+      const error = err as Error;
+      Logger.warn('Transaction failed', error);
+      throw err;
+    }
   }
 }
