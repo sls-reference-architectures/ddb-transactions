@@ -9,7 +9,8 @@
     "test:unit": "npx jest unit.test.ts",
     "test:int": "npx jest int.test.ts --config jest.config.int.js",
     "lint": "eslint . --ext .ts",
-    "deploy": "npx sls deploy -s dev"
+    "deploy": "npx sls deploy -s dev",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
