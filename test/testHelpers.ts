@@ -9,7 +9,8 @@ import {
 } from '@aws-sdk/lib-dynamodb';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 
-import { deleteUser, User } from '../src/uniqueConstraints';
+import { User } from '../src/models';
+import UserRepository from '../src/uniqueConstraints';
 
 export const createRandomUser = (overrideWith?: Partial<User>): User => {
   const firstName = faker.name.firstName();
@@ -28,11 +29,14 @@ export const createRandomUser = (overrideWith?: Partial<User>): User => {
 export class TestHelpers {
   private documentClient: DynamoDBDocumentClient;
 
+  private userRepo: UserRepository;
+
   private testUsers: User[];
 
   constructor() {
     const baseClient = new DynamoDBClient({ region: process.env.AWS_REGION });
     this.documentClient = DynamoDBDocumentClient.from(baseClient);
+    this.userRepo = new UserRepository();
     this.testUsers = [];
   }
 
@@ -53,7 +57,7 @@ export class TestHelpers {
     if (!user) {
       return;
     }
-    await deleteUser(user);
+    await this.userRepo.deleteUser(user);
   }
 
   async getUser(id: string) {

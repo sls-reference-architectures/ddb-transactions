@@ -1,12 +1,15 @@
 import retry from 'async-retry';
+import { User } from '../src/models';
 
-import { saveUser, User } from '../src/uniqueConstraints';
+import UserRepository from '../src/uniqueConstraints';
 import { createRandomUser, TestHelpers } from './testHelpers';
 
 describe('When saving user', () => {
   let testHelpers: TestHelpers;
+  let userRepo: UserRepository;
 
   beforeAll(() => {
+    userRepo = new UserRepository();
     testHelpers = new TestHelpers();
   });
 
@@ -19,7 +22,7 @@ describe('When saving user', () => {
     const user = createRandomUser();
 
     // ACT
-    const saveUserAction = () => saveUser(user);
+    const saveUserAction = () => userRepo.saveUser(user);
 
     // ASSERT
     await expect(saveUserAction()).resolves.not.toThrow();
@@ -30,7 +33,7 @@ describe('When saving user', () => {
     const user = createRandomUser();
 
     // ACT
-    await saveUser(user);
+    await userRepo.saveUser(user);
 
     // ASSERT
     await retry(
@@ -49,7 +52,7 @@ describe('When saving user', () => {
       const user = createRandomUser({ id });
 
       // ACT
-      const saveUserAction = () => saveUser(user);
+      const saveUserAction = () => userRepo.saveUser(user);
 
       // ASSERT
       await expect(saveUserAction()).rejects.toThrow();
@@ -60,12 +63,12 @@ describe('When saving user', () => {
     it('should fail', async () => {
       // ARRANGE
       const originalUser = createRandomUser();
-      await saveUser(originalUser);
+      await userRepo.saveUser(originalUser);
       testHelpers.trackIdForTeardown(originalUser);
       const user = createRandomUser({ userName: originalUser.userName });
 
       // ACT
-      const saveUserAction = () => saveUser(user);
+      const saveUserAction = () => userRepo.saveUser(user);
 
       // ASSERT
       await expect(saveUserAction()).rejects.toThrow();
