@@ -55,7 +55,7 @@ export default class UserRepository {
   async getUser(id: string): Promise<User> {
     const getInput: GetCommandInput = {
       TableName: process.env.TABLE_NAME,
-      Key: { id },
+      Key: { pk: id },
     };
     const { Item: user } = await this.documentClient.send(new GetCommand(getInput));
 
@@ -68,14 +68,14 @@ export default class UserRepository {
       Put: {
         Item: UserRepository.transformToDbSchema(user),
         TableName: TABLE_NAME,
-        ConditionExpression: 'attribute_not_exists(id)',
+        ConditionExpression: 'attribute_not_exists(pk)',
       },
     };
     const putUserName = {
       Put: {
-        Item: { id: user.userName },
+        Item: { pk: user.userName },
         TableName: TABLE_NAME,
-        ConditionExpression: 'attribute_not_exists(id)',
+        ConditionExpression: 'attribute_not_exists(pk)',
       },
     };
     const input: TransactWriteCommandInput = {

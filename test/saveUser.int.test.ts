@@ -20,6 +20,7 @@ describe('When saving user', () => {
   it('should succeed (baseline)', async () => {
     // ARRANGE
     const user = createRandomUser();
+    testHelpers.trackIdForTeardown(user.id);
 
     // ACT
     const saveUserAction = () => userRepo.saveUser(user);
@@ -34,11 +35,12 @@ describe('When saving user', () => {
 
     // ACT
     await userRepo.saveUser(user);
+    testHelpers.trackIdForTeardown(user.id);
 
     // ASSERT
     await retry(
       async () => {
-        const userInDb = (await testHelpers.getUser(user.id)) as User;
+        const userInDb = (await userRepo.getUser(user.id)) as User;
         expect(userInDb.email).toEqual(user.email);
       },
       { retries: 3 },
@@ -48,11 +50,13 @@ describe('When saving user', () => {
   describe('and another user already is using the id', () => {
     it('should fail', async () => {
       // ARRANGE
-      const { id } = await testHelpers.createRandomUserInDb();
-      const user = createRandomUser({ id });
+      const firstUser = createRandomUser()
+      await userRepo.saveUser(firstUser);
+      testHelpers.trackIdForTeardown(firstUser.id);
+      const secondUser = createRandomUser({ id: firstUser.id });
 
       // ACT
-      const saveUserAction = () => userRepo.saveUser(user);
+      const saveUserAction = () => userRepo.saveUser(secondUser);
 
       // ASSERT
       await expect(saveUserAction()).rejects.toThrow();
@@ -62,13 +66,13 @@ describe('When saving user', () => {
   describe('and another user already is using the userName', () => {
     it('should fail', async () => {
       // ARRANGE
-      const originalUser = createRandomUser();
-      await userRepo.saveUser(originalUser);
-      testHelpers.trackIdForTeardown(originalUser);
-      const user = createRandomUser({ userName: originalUser.userName });
+      const firstUser = createRandomUser();
+      await userRepo.saveUser(firstUser);
+      testHelpers.trackIdForTeardown(firstUser.id);
+      const secondUser = createRandomUser({ userName: firstUser.userName });
 
       // ACT
-      const saveUserAction = () => userRepo.saveUser(user);
+      const saveUserAction = () => userRepo.saveUser(secondUser);
 
       // ASSERT
       await expect(saveUserAction()).rejects.toThrow();
