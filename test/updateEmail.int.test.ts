@@ -38,4 +38,56 @@ describe('When updating user email', () => {
       { retries: 3 },
     );
   });
+
+  it('should update the user email', async () => {
+    // ARRANGE
+    const user = createRandomUser();
+    testHelpers.trackIdForTeardown(user.id);
+    await userRepo.saveUser(user);
+    const newEmail = `${user.email}_xyz`;
+
+    await retry(
+      async () => {
+        // ACT
+        await userRepo.updateEmail({
+          id: user.id,
+          oldEmail: user.email,
+          newEmail,
+        });
+
+        // ASSERT
+        const updatedUser = await userRepo.getUser(user.id);
+        await expect(updatedUser.email).toEqual(newEmail);
+      },
+      { retries: 3 },
+    );
+  });
+
+  describe('And the email is already in use', () => {
+    it('should fail', async () => {
+      // ARRANGE
+      const firstUser = createRandomUser();
+      await userRepo.saveUser(firstUser);
+      testHelpers.trackIdForTeardown(firstUser.id);
+      const secondUser = createRandomUser();
+      await userRepo.saveUser(secondUser);
+      testHelpers.trackIdForTeardown(secondUser.id);
+
+      await retry(
+        async () => {
+          // ACT
+          const updateEmailAction = () =>
+            userRepo.updateEmail({
+              id: secondUser.id,
+              oldEmail: secondUser.email,
+              newEmail: firstUser.email,
+            });
+
+          // ASSERT
+          await expect(updateEmailAction()).rejects.toThrow();
+        },
+        { retries: 3 },
+      );
+    });
+  });
 });

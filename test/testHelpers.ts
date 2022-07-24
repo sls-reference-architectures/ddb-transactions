@@ -6,7 +6,7 @@ import UserRepository from '../src/uniqueConstraints';
 
 export const createRandomUser = (overrideWith?: Partial<User>): User => {
   const firstName = faker.name.firstName();
-  const lastName = faker.name.lastName();
+  const lastName = `${faker.name.lastName()}_${ulid()}`;
 
   return {
     id: ulid(),
@@ -19,7 +19,6 @@ export const createRandomUser = (overrideWith?: Partial<User>): User => {
 };
 
 export class TestHelpers {
-
   private userRepo: UserRepository;
 
   private testUserIds: string[];
