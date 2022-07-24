@@ -13,7 +13,6 @@ const {
   env: { AWS_REGION, TABLE_NAME },
 } = process;
 
-
 export default class UserRepository {
   private documentClient: DynamoDBDocumentClient;
 
@@ -50,7 +49,7 @@ export default class UserRepository {
       TransactItems: [deleteUserEntity, deleteEmail, deleteUserName],
     };
     await this.documentClient.send(new TransactWriteCommand(txInput));
-  };
+  }
 
   async getUser(id: string): Promise<User> {
     const getInput: GetCommandInput = {
@@ -78,8 +77,15 @@ export default class UserRepository {
         ConditionExpression: 'attribute_not_exists(pk)',
       },
     };
+    const putEmail = {
+      Put: {
+        Item: { pk: user.email },
+        TableName: TABLE_NAME,
+        ConditionExpression: 'attribute_not_exists(pk)',
+      },
+    };
     const input: TransactWriteCommandInput = {
-      TransactItems: [putUser, putUserName],
+      TransactItems: [putUser, putUserName, putEmail],
     };
     try {
       await this.documentClient.send(new TransactWriteCommand(input));
@@ -97,7 +103,7 @@ export default class UserRepository {
 
     return dbModel;
   }
-  
+
   static transformToDomainSchema(userDb: UserDb): User {
     const id = userDb.pk;
     const domainModel = { ...userDb, id } as any;

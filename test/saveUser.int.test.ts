@@ -50,7 +50,7 @@ describe('When saving user', () => {
   describe('and another user already is using the id', () => {
     it('should fail', async () => {
       // ARRANGE
-      const firstUser = createRandomUser()
+      const firstUser = createRandomUser();
       await userRepo.saveUser(firstUser);
       testHelpers.trackIdForTeardown(firstUser.id);
       const secondUser = createRandomUser({ id: firstUser.id });
@@ -70,6 +70,22 @@ describe('When saving user', () => {
       await userRepo.saveUser(firstUser);
       testHelpers.trackIdForTeardown(firstUser.id);
       const secondUser = createRandomUser({ userName: firstUser.userName });
+
+      // ACT
+      const saveUserAction = () => userRepo.saveUser(secondUser);
+
+      // ASSERT
+      await expect(saveUserAction()).rejects.toThrow();
+    });
+  });
+
+  describe('and another user already is using the email', () => {
+    it('should fail', async () => {
+      // ARRANGE
+      const firstUser = createRandomUser();
+      await userRepo.saveUser(firstUser);
+      testHelpers.trackIdForTeardown(firstUser.id);
+      const secondUser = createRandomUser({ email: firstUser.email });
 
       // ACT
       const saveUserAction = () => userRepo.saveUser(secondUser);
