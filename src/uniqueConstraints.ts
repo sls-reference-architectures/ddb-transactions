@@ -21,12 +21,8 @@ export default class UserRepository {
     this.documentClient = DynamoDBDocumentClient.from(baseClient);
   }
 
-  async deleteUser(id: string): Promise<void> {
-    const user = (await this.getUser(id)) as User;
-    if (!user) {
-      return;
-    }
-
+  async deleteUser(input: { id: string; email: string; userName: string }): Promise<void> {
+    const { id, email, userName } = input;
     const deleteUserEntity = {
       Delete: {
         TableName: TABLE_NAME,
@@ -36,13 +32,13 @@ export default class UserRepository {
     const deleteUserName = {
       Delete: {
         TableName: TABLE_NAME,
-        Key: { pk: `userName#${user.userName}` },
+        Key: { pk: `userName#${userName}` },
       },
     };
     const deleteEmail = {
       Delete: {
         TableName: TABLE_NAME,
-        Key: { pk: `email#${user.email}` },
+        Key: { pk: `email#${email}` },
       },
     };
     const txInput: TransactWriteCommandInput = {

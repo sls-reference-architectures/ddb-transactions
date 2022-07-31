@@ -19,7 +19,7 @@ describe('When updating user email', () => {
   it('should succeed (baseline)', async () => {
     // ARRANGE
     const user = createRandomUser();
-    testHelpers.trackIdForTeardown(user.id);
+    testHelpers.trackIdForTeardown(user);
     await userRepo.saveUser(user);
 
     await retry(
@@ -42,7 +42,7 @@ describe('When updating user email', () => {
   it('should update the user email', async () => {
     // ARRANGE
     const user = createRandomUser();
-    testHelpers.trackIdForTeardown(user.id);
+    testHelpers.trackIdForTeardown(user);
     await userRepo.saveUser(user);
     const newEmail = `${user.email}_xyz`;
 
@@ -68,11 +68,11 @@ describe('When updating user email', () => {
       // ARRANGE
       const firstUser = createRandomUser();
       await userRepo.saveUser(firstUser);
-      testHelpers.trackIdForTeardown(firstUser.id);
+      testHelpers.trackIdForTeardown(firstUser);
       const inUseEmail = firstUser.email;
       const secondUser = createRandomUser();
       await userRepo.saveUser(secondUser);
-      testHelpers.trackIdForTeardown(secondUser.id);
+      testHelpers.trackIdForTeardown(secondUser);
 
       await retry(
         async () => {

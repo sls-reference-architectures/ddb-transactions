@@ -21,19 +21,25 @@ export const createRandomUser = (overrideWith?: Partial<User>): User => {
 export class TestHelpers {
   private userRepo: UserRepository;
 
-  private testUserIds: string[];
+  private testUserKeys: UserKeys[];
 
   constructor() {
     this.userRepo = new UserRepository();
-    this.testUserIds = [];
+    this.testUserKeys = [];
   }
 
   async teardown() {
-    const deletePromises = this.testUserIds.map(async (id) => this.userRepo.deleteUser(id));
+    const deletePromises = this.testUserKeys.map(async (key) => this.userRepo.deleteUser(key));
     await Promise.all(deletePromises);
   }
 
-  trackIdForTeardown(id: string) {
-    this.testUserIds.push(id);
+  trackIdForTeardown(userKey: UserKeys) {
+    this.testUserKeys.push(userKey);
   }
+}
+
+interface UserKeys {
+  id: string;
+  email: string;
+  userName: string;
 }

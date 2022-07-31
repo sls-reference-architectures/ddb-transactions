@@ -20,7 +20,7 @@ describe('When saving user', () => {
   it('should succeed (baseline)', async () => {
     // ARRANGE
     const user = createRandomUser();
-    testHelpers.trackIdForTeardown(user.id);
+    testHelpers.trackIdForTeardown(user);
 
     // ACT
     const saveUserAction = () => userRepo.saveUser(user);
@@ -35,7 +35,7 @@ describe('When saving user', () => {
 
     // ACT
     await userRepo.saveUser(user);
-    testHelpers.trackIdForTeardown(user.id);
+    testHelpers.trackIdForTeardown(user);
 
     // ASSERT
     await retry(
@@ -52,7 +52,7 @@ describe('When saving user', () => {
       // ARRANGE
       const firstUser = createRandomUser();
       await userRepo.saveUser(firstUser);
-      testHelpers.trackIdForTeardown(firstUser.id);
+      testHelpers.trackIdForTeardown(firstUser);
       const secondUser = createRandomUser({ id: firstUser.id });
 
       // ACT
@@ -68,7 +68,7 @@ describe('When saving user', () => {
       // ARRANGE
       const firstUser = createRandomUser();
       await userRepo.saveUser(firstUser);
-      testHelpers.trackIdForTeardown(firstUser.id);
+      testHelpers.trackIdForTeardown(firstUser);
       const secondUser = createRandomUser({ userName: firstUser.userName });
 
       // ACT
@@ -84,7 +84,7 @@ describe('When saving user', () => {
       // ARRANGE
       const firstUser = createRandomUser();
       await userRepo.saveUser(firstUser);
-      testHelpers.trackIdForTeardown(firstUser.id);
+      testHelpers.trackIdForTeardown(firstUser);
       const secondUser = createRandomUser({ email: firstUser.email });
 
       // ACT
