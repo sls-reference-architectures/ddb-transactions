@@ -69,6 +69,7 @@ describe('When updating user email', () => {
       const firstUser = createRandomUser();
       await userRepo.saveUser(firstUser);
       testHelpers.trackIdForTeardown(firstUser.id);
+      const inUseEmail = firstUser.email;
       const secondUser = createRandomUser();
       await userRepo.saveUser(secondUser);
       testHelpers.trackIdForTeardown(secondUser.id);
@@ -80,7 +81,7 @@ describe('When updating user email', () => {
             userRepo.updateEmail({
               id: secondUser.id,
               oldEmail: secondUser.email,
-              newEmail: firstUser.email,
+              newEmail: inUseEmail,
             });
 
           // ASSERT
