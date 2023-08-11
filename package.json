@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/sls-reference-architectures/ddb-transactions#readme",
   "devDependencies": {
-    "@aws-sdk/client-cloudformation": "^3.131.0",
+    "@aws-sdk/client-cloudformation": "^3.388.0",
     "@tsconfig/node16": "^1.0.3",
     "@types/async-retry": "^1.4.4",
     "@types/faker": "5.5.5",
@@ -52,7 +52,7 @@
     "ulid": "^2.3.0"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.131.0",
+    "@aws-sdk/client-dynamodb": "^3.388.0",
     "@aws-sdk/lib-dynamodb": "^3.131.0",
     "@aws-sdk/util-dynamodb": "^3.131.0",
     "@dazn/lambda-powertools-logger": "^1.28.1"
