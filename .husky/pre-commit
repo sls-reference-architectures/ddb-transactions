@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
 
-npm i
+npm ci
 npx tsc --noEmit
 npx lint-staged
 npm run test:unit
