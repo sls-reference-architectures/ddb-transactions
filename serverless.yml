@@ -1,12 +1,14 @@
 service: ddb-transactions
 
+frameworkVersion: '3'
+
 custom:
   stage: ${opt:stage, self:provider.stage}
   tableName: ${self:custom.stage}-${self:service}
 
 provider:
   name: aws
-  runtime: nodejs16.x
+  runtime: nodejs18.x
   stage: dev
   deploymentBucket:
     name: com.reference-architecture.deploys
