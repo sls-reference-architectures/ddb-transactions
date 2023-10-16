@@ -53,7 +53,7 @@
     "ulid": "^2.3.0"
   },
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.425.0",
+    "@aws-sdk/client-dynamodb": "^3.428.0",
     "@aws-sdk/lib-dynamodb": "^3.428.0",
     "@aws-sdk/util-dynamodb": "^3.425.0",
     "@dazn/lambda-powertools-logger": "^1.28.1"
