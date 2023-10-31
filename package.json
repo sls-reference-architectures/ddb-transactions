@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/sls-reference-architectures/ddb-transactions#readme",
   "devDependencies": {
-    "@aws-sdk/client-cloudformation": "^3.428.0",
+    "@aws-sdk/client-cloudformation": "^3.438.0",
     "@faker-js/faker": "^8.2.0",
     "@tsconfig/node16": "^16.1.1",
     "@types/async-retry": "^1.4.6",
