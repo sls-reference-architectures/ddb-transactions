@@ -26,7 +26,7 @@
     "@aws-sdk/client-cloudformation": "^3.441.0",
     "@faker-js/faker": "^8.2.0",
     "@tsconfig/node16": "^16.1.1",
-    "@types/async-retry": "^1.4.6",
+    "@types/async-retry": "^1.4.8",
     "@types/jest": "^29.5.8",
     "@typescript-eslint/eslint-plugin": "^6.3.0",
     "@typescript-eslint/parser": "^6.13.1",
