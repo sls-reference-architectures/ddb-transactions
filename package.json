@@ -54,7 +54,7 @@
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.529.1",
     "@aws-sdk/lib-dynamodb": "^3.529.1",
-    "@aws-sdk/util-dynamodb": "^3.535.0",
+    "@aws-sdk/util-dynamodb": "^3.540.0",
     "@dazn/lambda-powertools-logger": "^1.28.1"
   },
   "lint-staged": {
