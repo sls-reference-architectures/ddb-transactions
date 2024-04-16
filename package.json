@@ -48,7 +48,7 @@
     "serverless-esbuild": "^1.52.1",
     "serverless-plugin-log-retention": "^2.0.0",
     "serverless-prune-plugin": "^2.0.2",
-    "typescript": "^5.4.3",
+    "typescript": "^5.4.5",
     "ulid": "^2.3.0"
   },
   "dependencies": {
