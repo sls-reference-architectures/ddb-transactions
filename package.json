@@ -53,7 +53,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.590.0",
-    "@aws-sdk/lib-dynamodb": "^3.564.0",
+    "@aws-sdk/lib-dynamodb": "^3.592.0",
     "@aws-sdk/util-dynamodb": "^3.588.0",
     "@dazn/lambda-powertools-logger": "^1.28.1"
   },
