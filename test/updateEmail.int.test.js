@@ -4,8 +4,8 @@ import UserRepository from '../src/uniqueConstraints';
 import { createRandomUser, TestHelpers } from './testHelpers';
 
 describe('When updating user email', () => {
-  let testHelpers: TestHelpers;
-  let userRepo: UserRepository;
+  let testHelpers;
+  let userRepo;
 
   beforeAll(() => {
     userRepo = new UserRepository();

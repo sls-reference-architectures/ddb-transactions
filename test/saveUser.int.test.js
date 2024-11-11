@@ -1,12 +1,11 @@
 import retry from 'async-retry';
-import { User } from '../src/models';
 
 import UserRepository from '../src/uniqueConstraints';
 import { createRandomUser, TestHelpers } from './testHelpers';
 
 describe('When saving user', () => {
-  let testHelpers: TestHelpers;
-  let userRepo: UserRepository;
+  let testHelpers;
+  let userRepo;
 
   beforeAll(() => {
     userRepo = new UserRepository();
@@ -40,7 +39,7 @@ describe('When saving user', () => {
     // ASSERT
     await retry(
       async () => {
-        const userInDb = (await userRepo.getUser(user.id)) as User;
+        const userInDb = await userRepo.getUser(user.id);
         expect(userInDb.email).toEqual(user.email);
       },
       { retries: 3 },

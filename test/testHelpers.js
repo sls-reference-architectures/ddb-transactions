@@ -1,10 +1,9 @@
 import { ulid } from 'ulid';
 import { faker } from '@faker-js/faker';
 
-import { User } from '../src/models';
 import UserRepository from '../src/uniqueConstraints';
 
-export const createRandomUser = (overrideWith?: Partial<User>): User => {
+export const createRandomUser = (overrideWith) => {
   const firstName = faker.person.firstName();
   const lastName = `${faker.person.lastName()}_${ulid()}`;
 
@@ -19,10 +18,6 @@ export const createRandomUser = (overrideWith?: Partial<User>): User => {
 };
 
 export class TestHelpers {
-  private userRepo: UserRepository;
-
-  private testUserKeys: UserKeys[];
-
   constructor() {
     this.userRepo = new UserRepository();
     this.testUserKeys = [];
@@ -33,13 +28,7 @@ export class TestHelpers {
     await Promise.all(deletePromises);
   }
 
-  trackIdForTeardown(userKey: UserKeys) {
+  trackIdForTeardown(userKey) {
     this.testUserKeys.push(userKey);
   }
-}
-
-interface UserKeys {
-  id: string;
-  email: string;
-  userName: string;
 }

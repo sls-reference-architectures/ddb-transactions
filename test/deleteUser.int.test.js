@@ -10,9 +10,9 @@ const {
 } = process;
 
 describe('When deleting user', () => {
-  let testHelpers: TestHelpers;
-  let userRepo: UserRepository;
-  let documentClient: DynamoDBDocumentClient;
+  let testHelpers;
+  let userRepo;
+  let documentClient;
 
   beforeAll(() => {
     userRepo = new UserRepository();

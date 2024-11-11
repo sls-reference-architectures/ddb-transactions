@@ -1,28 +1,16 @@
 import Logger from '@dazn/lambda-powertools-logger';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import {
-  DynamoDBDocumentClient,
-  GetCommand,
-  GetCommandInput,
-  TransactWriteCommand,
-  TransactWriteCommandInput,
-} from '@aws-sdk/lib-dynamodb';
-import { User, UserDb } from './models';
+import { DynamoDBDocumentClient, GetCommand, TransactWriteCommand } from '@aws-sdk/lib-dynamodb';
 
-const {
-  env: { AWS_REGION, TABLE_NAME },
-} = process;
+const { AWS_REGION, TABLE_NAME } = process.env;
 
 export default class UserRepository {
-  private documentClient: DynamoDBDocumentClient;
-
   constructor() {
     const baseClient = new DynamoDBClient({ region: AWS_REGION });
     this.documentClient = DynamoDBDocumentClient.from(baseClient);
   }
 
-  async deleteUser(input: { id: string; email: string; userName: string }): Promise<void> {
-    const { id, email, userName } = input;
+  async deleteUser({ id, email, userName }) {
     const deleteUserEntity = {
       Delete: {
         TableName: TABLE_NAME,
@@ -41,23 +29,23 @@ export default class UserRepository {
         Key: { pk: `email#${email}` },
       },
     };
-    const txInput: TransactWriteCommandInput = {
+    const txInput = {
       TransactItems: [deleteUserEntity, deleteEmail, deleteUserName],
     };
     await this.documentClient.send(new TransactWriteCommand(txInput));
   }
 
-  async getUser(id: string): Promise<User> {
-    const getInput: GetCommandInput = {
+  async getUser(id) {
+    const getInput = {
       TableName: process.env.TABLE_NAME,
       Key: { pk: id },
     };
     const { Item: user } = await this.documentClient.send(new GetCommand(getInput));
 
-    return UserRepository.transformToDomainSchema(user as UserDb);
+    return UserRepository.transformToDomainSchema(user);
   }
 
-  async saveUser(user: User): Promise<void> {
+  async saveUser(user) {
     Logger.debug('In saveUser()', { user });
     const putUser = {
       Put: {
@@ -80,37 +68,35 @@ export default class UserRepository {
         ConditionExpression: 'attribute_not_exists(pk)',
       },
     };
-    const input: TransactWriteCommandInput = {
+    const input = {
       TransactItems: [putUser, putUserName, putEmail],
     };
     try {
       await this.documentClient.send(new TransactWriteCommand(input));
     } catch (err) {
-      const error = err as Error;
-      Logger.warn('Transaction failed', error);
+      Logger.warn('Transaction failed', err);
       throw err;
     }
   }
 
-  static transformToDbSchema(userDomain: User): UserDb {
+  static transformToDbSchema(userDomain) {
     const pk = userDomain.id;
-    const dbModel = { ...userDomain, pk } as any;
+    const dbModel = { ...userDomain, pk };
     delete dbModel.id;
 
     return dbModel;
   }
 
-  static transformToDomainSchema(userDb: UserDb): User {
+  static transformToDomainSchema(userDb) {
     const id = userDb.pk;
-    const domainModel = { ...userDb, id } as any;
+    const domainModel = { ...userDb, id };
     delete domainModel.pk;
 
     return domainModel;
   }
 
-  async updateEmail(input: { id: string; newEmail: string; oldEmail: string }): Promise<void> {
-    Logger.debug('In updateEmail()', { input });
-    const { id, oldEmail, newEmail } = input;
+  async updateEmail({ id, newEmail, oldEmail }) {
+    Logger.debug('In updateEmail()', { id, newEmail, oldEmail });
     const updateUser = {
       Update: {
         TableName: TABLE_NAME,
@@ -134,14 +120,13 @@ export default class UserRepository {
         ConditionExpression: 'attribute_not_exists(pk)',
       },
     };
-    const txInput: TransactWriteCommandInput = {
+    const txInput = {
       TransactItems: [updateUser, deleteOldEmailConstraint, addNewEmailConstraint],
     };
     try {
       await this.documentClient.send(new TransactWriteCommand(txInput));
     } catch (err) {
-      const error = err as Error;
-      Logger.warn('Transaction failed', error);
+      Logger.warn('Transaction failed', err);
       throw err;
     }
   }

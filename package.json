@@ -4,13 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "rm -rf .build && npx tsc",
     "test": "npm run lint && npm run test:unit",
-    "test:unit": "npx jest unit.test.ts --silent",
-    "test:int": "npx jest int.test.ts --config jest.config.int.js --silent",
-    "lint": "eslint . --ext .ts",
+    "test:unit": "npx jest unit.test --silent",
+    "test:int": "npx jest int.test --config jest.config.int.js --silent",
+    "lint": "eslint .",
     "deploy": "npx sls deploy -s dev",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
@@ -25,16 +24,13 @@
   "devDependencies": {
     "@aws-sdk/client-cloudformation": "^3.687.0",
     "@faker-js/faker": "^8.4.1",
-    "@tsconfig/node16": "^16.1.3",
-    "@types/async-retry": "^1.4.8",
+    "@swc/core": "^1.9.2",
+    "@swc/jest": "^0.2.37",
     "@types/jest": "^29.5.12",
-    "@typescript-eslint/eslint-plugin": "^7.7.1",
-    "@typescript-eslint/parser": "^7.18.0",
     "async-retry": "^1.3.3",
     "esbuild": "^0.20.2",
-    "esbuild-jest": "^0.5.0",
     "eslint": "^8.57.0",
-    "eslint-config-airbnb-typescript": "^18.0.0",
+    "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-import-resolver-node": "^0.3.9",
     "eslint-plugin-no-only-tests": "^3.1.0",
@@ -48,7 +44,6 @@
     "serverless-esbuild": "^1.52.1",
     "serverless-plugin-log-retention": "^2.0.0",
     "serverless-prune-plugin": "^2.0.2",
-    "typescript": "^5.4.5",
     "ulid": "^2.3.0"
   },
   "dependencies": {
