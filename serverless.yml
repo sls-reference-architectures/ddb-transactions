@@ -18,6 +18,3 @@ provider:
 #   In brief, a restore will wreck your references. For more information, contact me.
 resources:
   - ${file(infrastructure/dynamodb.yml)}
-
-plugins:
-  - serverless-deployment-bucket
