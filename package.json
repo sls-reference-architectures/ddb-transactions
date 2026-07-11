@@ -9,6 +9,7 @@
     "test:int": "npx jest int.test --config jest.config.int.js --silent",
     "lint": "eslint .",
     "deploy": "npx sls deploy -s dev",
+    "teardown": "npx sls remove -s dev",
     "prepare": "husky"
   },
   "repository": {
