@@ -1,8 +1,9 @@
-import Logger from '@dazn/lambda-powertools-logger';
+import { Logger } from '@aws-lambda-powertools/logger';
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { DynamoDBDocumentClient, GetCommand, TransactWriteCommand } from '@aws-sdk/lib-dynamodb';
 
 const { AWS_REGION, TABLE_NAME } = process.env;
+const logger = new Logger({ serviceName: 'ddb-transactions' });
 
 export default class UserRepository {
   constructor() {
@@ -46,7 +47,7 @@ export default class UserRepository {
   }
 
   async saveUser(user) {
-    Logger.debug('In saveUser()', { user });
+    logger.debug('In saveUser()', { user });
     const putUser = {
       Put: {
         Item: UserRepository.transformToDbSchema(user),
@@ -74,7 +75,7 @@ export default class UserRepository {
     try {
       await this.documentClient.send(new TransactWriteCommand(input));
     } catch (err) {
-      Logger.warn('Transaction failed', err);
+      logger.warn('Transaction failed', err);
       throw err;
     }
   }
@@ -96,7 +97,7 @@ export default class UserRepository {
   }
 
   async updateEmail({ id, newEmail, oldEmail }) {
-    Logger.debug('In updateEmail()', { id, newEmail, oldEmail });
+    logger.debug('In updateEmail()', { id, newEmail, oldEmail });
     const updateUser = {
       Update: {
         TableName: TABLE_NAME,
@@ -126,7 +127,7 @@ export default class UserRepository {
     try {
       await this.documentClient.send(new TransactWriteCommand(txInput));
     } catch (err) {
-      Logger.warn('Transaction failed', err);
+      logger.warn('Transaction failed', err);
       throw err;
     }
   }

@@ -45,10 +45,10 @@
     "ulid": "^2.3.0"
   },
   "dependencies": {
+    "@aws-lambda-powertools/logger": "^2.34.0",
     "@aws-sdk/client-dynamodb": "^3.1081.0",
     "@aws-sdk/lib-dynamodb": "^3.1095.0",
-    "@aws-sdk/util-dynamodb": "^3.996.7",
-    "@dazn/lambda-powertools-logger": "^1.28.1"
+    "@aws-sdk/util-dynamodb": "^3.996.7"
   },
   "lint-staged": {
     "*.{js,ts}": "eslint --cache --fix",
