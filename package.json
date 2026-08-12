@@ -40,7 +40,7 @@
     "jest-extended": "^7.0.0",
     "lint-staged": "^15.2.10",
     "osls": "^4.0.0",
-    "prettier": "^3.2.5",
+    "prettier": "^3.9.6",
     "serverless-esbuild": "^1.57.2",
     "ulid": "^3.0.2"
   },
