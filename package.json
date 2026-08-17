@@ -36,7 +36,7 @@
     "husky": "^9.0.11",
     "jest": "^30.4.2",
     "jest-extended": "^7.0.0",
-    "lint-staged": "^15.2.10",
+    "lint-staged": "^17.3.0",
     "osls": "^4.0.0",
     "prettier": "^3.9.6",
     "ulid": "^3.0.2"
