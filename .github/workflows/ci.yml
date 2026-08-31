@@ -6,6 +6,9 @@ name: CI & Test
 on:
   push:
     branches: [master]
+  schedule:
+    - cron: '40 5 * * *' # Daily deploy; fleet staggered 5 min apart (Free plan = 20 concurrent jobs)
+  workflow_dispatch:
 
 # Shared with teardown.yml so the weekly teardown can never overlap a build.
 concurrency: build-deploy-test
