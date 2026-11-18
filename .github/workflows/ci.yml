@@ -32,31 +32,6 @@ jobs:
         run: npm ci
       - name: Run unit tests
         run: npm test
-      - name: Install AWS Emulator
-        run: |
-          curl -fsSL -w 'downloaded %{size_download} bytes in %{time_total}s\n' \
-            -o "$RUNNER_TEMP/aws-emulator.deb" \
-            https://downloads.aws.com/aws-emulator/packages/aws-emulator/LTS/latest/aws-emulator_amd64.deb
-          sudo apt-get install -y "$RUNNER_TEMP/aws-emulator.deb"
-          aws-emulator -v
-      - name: Start AWS Emulator
-        run: |
-          nohup aws-emulator --telemetry off --idle-timeout 900 > "$RUNNER_TEMP/aws-emulator.log" 2>&1 &
-          for i in $(seq 60); do
-            curl -sf --cacert "$HOME/.aws/emulator/9297/ca.pem" https://127.0.0.1:9297/__admin/health && echo " ready after ${i}s" && exit 0
-            sleep 1
-          done
-          cat "$RUNNER_TEMP/aws-emulator.log"
-          exit 1
-      - name: Run int tests (AWS Emulator)
-        run: |
-          EMULATOR_DIR="$HOME/.aws/emulator/9297"
-          export AWS_ENDPOINT_URL=https://127.0.0.1:9297
-          export AWS_SHARED_CREDENTIALS_FILE="$EMULATOR_DIR/emulator_credentials"
-          export AWS_CONFIG_FILE="$EMULATOR_DIR/config"
-          export NODE_EXTRA_CA_CERTS="$EMULATOR_DIR/ca.pem"
-          export AWS_REGION=us-east-1
-          npm run test:int
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v6
         with:
@@ -64,7 +39,7 @@ jobs:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
       - name: Deploy
         run: npm run deploy
-      - name: Run int tests (real AWS)
+      - name: Run int tests
         run: npm run test:int
       # - name: Run E2E Tests
       #   run: npm run test:e2e
